@@ -4,4 +4,9 @@ export const ROUTER_APP = {
         type: "public",
         name: "Thực hành 1",
     },
+    AFFINE: {
+        href: "/affine",
+        type: "public",
+        name: "Affine",
+    },
 }

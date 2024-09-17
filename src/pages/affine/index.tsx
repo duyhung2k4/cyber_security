@@ -5,6 +5,7 @@ import { useForm } from "@mantine/form";
 
 
 function modInverse(a: number, m: number): number {
+    // Tìm nghịch đảo modulo của a dưới mod m
     for (let i = 1; i < m; i++) {
         if ((a * i) % m === 1) {
             return i;
@@ -13,27 +14,27 @@ function modInverse(a: number, m: number): number {
     throw new Error("a and m are not coprime, inverse does not exist.");
 }
 
-export function affineEncrypt(text: string, a: number, b: number): string {
+function affineEncrypt(text: string, a: number, b: number): string {
     return text
         .toLowerCase()
         .split('')
         .map((char) => {
-            if (char < 'a' || char > 'z') return char;
-            const x = char.charCodeAt(0) - 'a'.charCodeAt(0);
+            if (char < 'a' || char > 'z') return char; // Bỏ qua ký tự không phải chữ cái
+            const x = char.charCodeAt(0) - 'a'.charCodeAt(0); // Giá trị số của ký tự
             const encryptedChar = (a * x + b) % ALPHABET_SIZE;
             return String.fromCharCode(encryptedChar + 'a'.charCodeAt(0));
         })
         .join('');
 }
 
-export function affineDecrypt(text: string, a: number, b: number): string {
+function affineDecrypt(text: string, a: number, b: number): string {
     const aInverse = modInverse(a, ALPHABET_SIZE);
     return text
         .toLowerCase()
         .split('')
         .map((char) => {
-            if (char < 'a' || char > 'z') return char;
-            const y = char.charCodeAt(0) - 'a'.charCodeAt(0);
+            if (char < 'a' || char > 'z') return char; // Bỏ qua ký tự không phải chữ cái
+            const y = char.charCodeAt(0) - 'a'.charCodeAt(0); // Giá trị số của ký tự
             const decryptedChar = (aInverse * (y - b + ALPHABET_SIZE)) % ALPHABET_SIZE;
             return String.fromCharCode(decryptedChar + 'a'.charCodeAt(0));
         })
@@ -41,9 +42,7 @@ export function affineDecrypt(text: string, a: number, b: number): string {
 }
 
 
-
 const Affine: React.FC = () => {
-
     const formAB = useForm<{
         a: number | undefined
         b: number | undefined
@@ -79,7 +78,7 @@ const Affine: React.FC = () => {
 
         formEncrypt.setValues({
             ...formEncrypt.values,
-            output: affineEncrypt(formEncrypt.values.input, formAB.values.a, formAB.values.b)
+            output: affineEncrypt(formEncrypt.values.input, Number(formAB.values.a), Number(formAB.values.b))
         })
     }, [
         formAB.values.a,
@@ -92,7 +91,7 @@ const Affine: React.FC = () => {
 
         formDecrypt.setValues({
             ...formDecrypt.values,
-            output: affineDecrypt(formDecrypt.values.input, formAB.values.a, formAB.values.b)
+            output: affineDecrypt(formDecrypt.values.input, Number(formAB.values.a), Number(formAB.values.b))
         })
     }, [
         formAB.values.a,
